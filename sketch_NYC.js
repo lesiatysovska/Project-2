@@ -1,8 +1,8 @@
 // https://p5js.org/reference/
 
 // Delare variable table, with global scope
-let table
-let circles = []
+// let table
+// let circles = []
 
 function preload() {
   // my table is comma separated value "csv"
@@ -13,11 +13,13 @@ function preload() {
 function setup() {
   createCanvas(windowWidth, windowHeight);
   background('white')
+
+  let table
+  let circles = []
+  
   // print object to table
   print(table)
-}
 
-function draw() {
   // loop through table object
   for (let r = 0; r < table.getRowCount(); r++) {
     let name = table.getString(r, 'School Name');
@@ -25,7 +27,6 @@ function draw() {
     let quality = table.getString(r, 'Quality Review Rating');
 
     // use map to scale output size
-    let circle_size = map(score, 900,2200,0,50)
     let ratingColor;
     if(quality == "Well Developed"){
       ratingColor = color('#A9CF55');}  //green
@@ -36,8 +37,9 @@ function draw() {
       else {
       ratingColor = color('#F14440');}  //red
 
-// Store circle data in the array
-circles.push({
+
+  // Store circle data in the array
+  circles.push({
   name: name,
   size: circle_size,
   quality: quality,
@@ -46,25 +48,58 @@ circles.push({
 
  // Sort circles by size (descending order)
  circles.sort((a, b) => b.size - a.size);
+}
+
+function draw() {
+  
+
+  let angle = 2.0;
+  let offset = 300;
+  let scalar = 3.5;
+  let speed = 0.1;
+
+  for (let i = 0; i < circles.length; i++) {
+ 
+    let x = offset + cos(angle) * scalar;
+    let y = offset + sin(angle) * scalar;
+
+    fill(circles[i]['color']);
+    noStroke();
+    circle(x, y, circles[i]['size']+20)
+
+    textSize(11);
+    fill(circles[i]['color']);
+    text(circles[i]['name'], x, y + circles[i]['size']/2 + 8);
+    ellipse(x, y, 5, 5);
+    
+    angle += speed;
+    scalar += speed;
   }
+
+}
+
+function getCircleSize(satScore) {
+  return map(satScore, 900, 2200, 0, 50);
+}
+
 
 // Draw circles based on the sorted array
 
-  let x = 200;
-  let y = 200;
+  // let x = 200;
+  // let y = 200;
 
-  for (let i = 0; i < circles.length; i++) {
+  // for (let i = 0; i < circles.length; i++) {
   
-   fill(circles[i]['color']);
+  //  fill(circles[i]['color']);
 
-   textAlign(CENTER,TOP)
-   noStroke();
-   circle(x, y, circles[i]['size']+200)
-   textSize(11);
-   fill(circles[i]['color']);
-   text(name, x, y + circles[i]['size']/2 + 8);
+  //  textAlign(CENTER,TOP)
+  //  noStroke();
+  //  circle(x, y, circles[i]['size']+20)
+  //  textSize(11);
+  //  fill(circles[i]['color']);
+  //  text(name, x, y + circles[i]['size']/2 + 8);
 
-  }
+  // }
     // print(name) // print to console, console.log(name) will do the same thing
     
   noLoop()
