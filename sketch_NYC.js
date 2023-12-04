@@ -1,8 +1,9 @@
 // https://p5js.org/reference/
 
-// Delare variable table, with global scope
+// Declare variable table, with global scope
 let table
-let circles = []
+let circles = [];
+let fadeInSpeed = 5
 
 async function preload() {
   // my table is comma separated value "csv"
@@ -52,7 +53,10 @@ function setup() {
     name: name,
     size: circleSize,
     quality: quality,
-    color: ratingColor
+    color: ratingColor,
+    x: random(width),
+    y: random(height),
+    opacity: 0
 });
 
  // Sort circles by size (descending order)
@@ -64,6 +68,37 @@ noLoop()
 }
 
 function draw() {
+  
+  for (let i=0; i<circles.length; i++) {
+
+    // Calculate distance from mouse to the circle's center
+    let distanceToMouse = dist(mouseX, mouseY, circles [i].x, circles[i].y);
+
+    // Hover effect: change size
+    if (distanceToMouse < circles[i].size * 2); {
+    newSize = circles[i].size * 1.5;
+    // Display information
+    fill(0);
+    textAlign(CENTER)
+    textSize(14);
+    text(
+      '${circles[i].School Name}\nAverageSATScore: ${circles[i].AverageSATScore}\nRating: ${circles[i].quality}'
+    )
+  }
+
+  // // Fading
+  // circles[i].opacity += fadeInSpeed;
+  // circles[i].opacity = constrain(circles[i].opacity, 0, 255);
+
+  // //Draw the circle with the calculated opacity
+  // noStroke();
+  // fill(
+  //   circles[i].color.levels[0], 
+  //   circles[i].color.levels[1], 
+  //   circles[i].color.levels[2], 
+  //   circles[i].color.opacity);
+    
+  // circle(circles[i].x, circles[i].y, circles[i].size / 2 + 8);
   
   let angle = 100;
   let offset = 600;
@@ -89,6 +124,7 @@ function draw() {
     
   }
 
+}
 }
 
 function getCircleSize(score) {
