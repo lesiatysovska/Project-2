@@ -1,22 +1,29 @@
 // https://p5js.org/reference/
 
 // Delare variable table, with global scope
-// let table
-// let circles = []
+let table
+let circles = []
 
-function preload() {
+async function preload() {
   // my table is comma separated value "csv"
   // and has a header specifying the columns labels
-  table = loadTable('assets/School_Quality_Reports_High_Schools.csv', 'csv', 'header');
+  table = await loadTable('assets/School_Quality_Reports_High_Schools.csv', 'csv', 'header');
+  // return table;
 }
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
-  background('white')
 
-  let table
-  let circles = []
+  //Check if table is loaded
+  if (!table) {
+    console.error("Table not loaded.")
+    return;
+  }
+
+  createCanvas(3000, 1200);
+  background('white')
   
+  console.log(table);
+
   // print object to table
   print(table)
 
@@ -29,36 +36,44 @@ function setup() {
     // use map to scale output size
     let ratingColor;
     if(quality == "Well Developed"){
-      ratingColor = color('#A9CF55');}  //green
+      ratingColor = color(169, 207, 85, 150);}  //green '#A9CF55'
       else if(quality == "Proficient"){
-      ratingColor = color('#70B7B9');}   //blue
+      ratingColor = color(112, 183, 185, 150);}   //blue '#70B7B9'
       else if(quality == "Developing"){
-      ratingColor = color('#F7E867'); }  //yellow
+      ratingColor = color(247, 232, 103, 150); }  //yellow '#F7E867'
       else {
-      ratingColor = color('#F14440');}  //red
+      ratingColor = color(241, 68, 64, 150);}  //red '#F14440'
 
+  // Map size
+  let circleSize = getCircleSize(score);
 
   // Store circle data in the array
   circles.push({
-  name: name,
-  size: circle_size,
-  quality: quality,
-  color: ratingColor
+    name: name,
+    size: circleSize,
+    quality: quality,
+    color: ratingColor
 });
 
  // Sort circles by size (descending order)
- circles.sort((a, b) => b.size - a.size);
+ circles.sort((a, b) => a.size - b.size);
+}
+
+noLoop()
+
 }
 
 function draw() {
   
-
-  let angle = 2.0;
-  let offset = 300;
-  let scalar = 3.5;
-  let speed = 0.1;
+  let angle = 100;
+  let offset = 600;
+  let scalar = 10;
+  let rotationspeed = 2;
 
   for (let i = 0; i < circles.length; i++) {
+
+    angle += rotationspeed;
+    scalar += rotationspeed;
  
     let x = offset + cos(angle) * scalar;
     let y = offset + sin(angle) * scalar;
@@ -67,19 +82,17 @@ function draw() {
     noStroke();
     circle(x, y, circles[i]['size']+20)
 
-    textSize(11);
-    fill(circles[i]['color']);
-    text(circles[i]['name'], x, y + circles[i]['size']/2 + 8);
-    ellipse(x, y, 5, 5);
+    // textSize(11);
+    // fill(circles[i]['color']);
+    // text(circles[i]['name'], x, y + circles[i]['size']/2 + 8);
+    // ellipse(x, y, 1, 1);
     
-    angle += speed;
-    scalar += speed;
   }
 
 }
 
-function getCircleSize(satScore) {
-  return map(satScore, 900, 2200, 0, 50);
+function getCircleSize(score) {
+  return map(score, 900, 2200, 0, 70);
 }
 
 
@@ -102,10 +115,8 @@ function getCircleSize(satScore) {
   // }
     // print(name) // print to console, console.log(name) will do the same thing
     
-  noLoop()
-}
 
 // Resizes canvas to new window width and height  
-function windowResized() {
-    resizeCanvas(windowWidth, windowHeight);
-  }
+// function windowResized() {
+//     resizeCanvas(windowWidth, windowHeight);
+//   }
