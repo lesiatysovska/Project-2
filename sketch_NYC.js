@@ -58,7 +58,7 @@ function setup() {
     size: circleSize,
     quality: quality,
     color: ratingColor,
-    angle: 0,
+    angle: angle,
     radius: 0,
     x: offset + cos(angle) * scalar,
     y: offset + sin(angle) * scalar,
@@ -70,7 +70,7 @@ function setup() {
  scalar += speed;
 
  // Sort circles by size (descending order)
- circles.sort((a, b) => a.size - b.size);
+ circles.sort((a, b) => b.size - a.size);
 }
 
 }
@@ -95,12 +95,10 @@ function draw() {
       fill('gray');
       textAlign(CENTER, CENTER)
       textSize(14);
-      text(`${circles[j].name}\nSAT Score: ${circles[j].score}\nQuality: ${circles[j].quality}`, circles[j].x, circles[j].y)
+      text(`${circles[j].name}\nSAT Score: ${circles[j].score}\nQuality: ${circles[j].quality}`,circles[j].x, circles[j].y);
       
     }
-    
   }
-
 }
 
 function getCircleSize(score) {
