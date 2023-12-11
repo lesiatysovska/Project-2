@@ -4,10 +4,11 @@
 let table
 let circles = [];
 let fadeInSpeed = 0.1
-var angle = 2.0;
+// let angle = 2.0;
 var offset = 500;
-var scalar = 30;
-var speed = 1.5;
+// let scalar = 30;
+let speed = 0.1;
+let shouldLoop = true;
 
 async function preload() {
   // my table is comma separated value "csv"
@@ -26,6 +27,8 @@ function setup() {
 
   createCanvas(windowWidth, windowHeight);
   background('white');
+
+  let angle = 0;
   
   console.log(table);
 
@@ -37,9 +40,9 @@ function setup() {
     let name = table.getString(r, 'School Name');
     let score = table.getNum(r, 'AverageSATScore');
     let quality = table.getString(r, 'Quality Review Rating');
+    let ratingColor;
 
     // use map to scale output size
-    let ratingColor;
     if(quality == "Well Developed"){
       ratingColor = color(169, 207, 85, 150);}  //green '#A9CF55'
       else if(quality == "Proficient"){
@@ -51,6 +54,8 @@ function setup() {
 
   // Map size
   let circleSize = getCircleSize(score);
+  // let angle = map(r, 0, table.getRowCount(), 0, TWO_PI);
+  let scalar = map(r, 0, table.getRowCount(), 0, 500);
 
   // Store circle data in the array
   circles.push({
@@ -59,7 +64,7 @@ function setup() {
     quality: quality,
     color: ratingColor,
     angle: angle,
-    radius: 0,
+    radius: scalar,  //0
     x: offset + cos(angle) * scalar,
     y: offset + sin(angle) * scalar,
     opacity: 0,
@@ -67,20 +72,27 @@ function setup() {
 });
 
  angle += speed;
- scalar += speed;
+//  scalar += speed;
+}
 
  // Sort circles by size (descending order)
- circles.sort((a, b) => b.size - a.size);
-}
+ circles.sort((a, b) => a.size - b.size);
+//  noLoop();
+
+ // Set up a timer to redraw the canvas every 500 milliseconds
+ setInterval(function () {
+  redraw();
+}, 500);
 
 }
 
 function mouseOverCircle(x, y, r) {
   let d = dist(mouseX, mouseY, x, y);
-  return (d < r);
+  return (d < r /2);
 }
 
 function draw() {
+  background('white');
   
   for (let j = 0; j < circles.length; j++) {
 
@@ -95,12 +107,30 @@ function draw() {
       fill('gray');
       textAlign(CENTER, CENTER)
       textSize(14);
-      text(`${circles[j].name}\nSAT Score: ${circles[j].score}\nQuality: ${circles[j].quality}`,circles[j].x, circles[j].y);
+      text(
+        `${circles[j].name}\nSAT Score: ${circles[j].score}\nQuality: ${circles[j].quality}`, 
+        circles[j].x, 
+        circles[j].y
+        );
       
     }
   }
+
+  // if (!shouldLoop) {
+  //   noLoop();
+  // }
+
+  // Stop the continuous loop after drawing once
+  shouldLoop = false;
+  noLoop();
 }
 
 function getCircleSize(score) {
   return map(score, 900, 2200, 0, 70);
+}
+
+function mousePressed() {
+  // Restart the loop on mouse press
+  shouldLoop = true;
+  loop();
 }
