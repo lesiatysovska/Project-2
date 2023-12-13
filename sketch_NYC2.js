@@ -1,43 +1,31 @@
+// Dataset https://www.kaggle.com/datasets/nationalparkservice/park-biodiversity/?select=parks.csv
 // https://p5js.org/reference/
 
-// Declare variable table, with global scope
+// Delare variable table, with global scope
 let table
 let circles = [];
 let fadeInSpeed = 0.1
-// let angle = 2.0;
-var offset = 500;
-// let scalar = 30;
+let offset = 500;
 let speed = 0.1;
 let shouldLoop = true;
 
-async function preload() {
+function preload() {
   // my table is comma separated value "csv"
   // and has a header specifying the columns labels
-  table = await loadTable('assets/School_Quality_Reports_High_Schools.csv', 'csv', 'header');
-  // return table;
+  table = loadTable('assets/School_Quality_Reports_High_Schools.csv', 'csv', 'header');
 }
 
 function setup() {
-
-  //Check if table is loaded
-  if (!table) {
-    console.error('Table not loaded.');
-    return;
-  }
-
-  createCanvas(3000, 1100);
-  background('white');
+  createCanvas(windowWidth, windowHeight);
+  background('white')
 
   let angle = 0;
-  let centerX = 950;
-  let centerY = 500;
-  
-  // console.log(table);
+  let centerX = windowWidth / 2;
+  let centerY = windowHeight / 2;
 
   // print object to table
-  // print(table);
+  // print(table)
 
-  // loop through table object
   for (let r = 0; r < table.getRowCount(); r++) {
     let name = table.getString(r, 'School Name');
     let score = table.getNum(r, 'AverageSATScore');
@@ -59,10 +47,10 @@ function setup() {
   // let angle = map(r, 0, table.getRowCount(), 0, TWO_PI);
   // let scalar = map(r, 0, table.getRowCount(), 0, 500);
 
-   // Polar coordinates for the spiral
-   let radius = map(r, 0, table.getRowCount(), 0, 500);
-   let x = centerX + radius * cos(angle);
-   let y = centerY + radius * sin(angle);
+  // Polar coordinates for the spiral
+  let radius = map(r, 0, table.getRowCount(), 0, 500);
+  let x = centerX + radius * cos(angle);
+  let y = centerY + radius * sin(angle);
 
   // Store circle data in the array
   circles.push({
@@ -71,43 +59,33 @@ function setup() {
     quality: quality,
     color: ratingColor,
     angle: angle,
-    radius: radius,  //0
+    radius: radius,
     x: x,
     y: y,
     opacity: 0,
     score: score,
 });
 
-angle += 0.1;
+ angle += 0.1;
 //  scalar += speed;
 }
 
  // Sort circles by size (descending order)
-//  circles.sort((a, b) => a.score - b.score);
-
-// Log scores before sorting
-// console.log("Scores before sorting:", circles.map(circle => circle.score));
-
-// Sort circles by size (descending order)
-circles.sort((a, b) => a.score - b.score);
-
-// Log scores after sorting
-// console.log("Scores after sorting:", circles.map(circle => circle.score));
+ circles.sort((a, b) => a.score - b.score);
 
  // Set up a timer to redraw the canvas every 500 milliseconds
  setInterval(function () {
   redraw();
-}, 500);
-
+  }, 500);
 }
 
-function mouseOverCircle(x, y, r) {
-  let d = dist(mouseX, mouseY, x, y);
-  return (d < r /2);
-}
+// function mouseOverCircle(x, y, r) {
+//   let d = dist(mouseX, mouseY, x, y);
+//   return (d < r /2);
+// }
 
 function draw() {
-  background('white');
+  
   
   for (let j = 0; j < circles.length; j++) {
 
@@ -127,28 +105,21 @@ function draw() {
         circles[j].x, 
         circles[j].y
         );
-
-         // Break the loop to only show text for the hovered circle
-      break;
       
     }
   }
+}
 
-  // if (!shouldLoop) {
-  //   noLoop();
-  // }
-
-  // Stop the continuous loop after drawing once
-  // shouldLoop = false;
-  // noLoop();
+function mouseOverCircle(x, y, r) {
+  let d = dist(mouseX, mouseY, x, y);
+  return (d < r / 2);
 }
 
 function getCircleSize(score) {
   return map(score, 900, 2200, 0, 70);
 }
 
-function mousePressed() {
-  // Restart the loop on mouse press
-  shouldLoop = true;
-  loop();
+// Resizes canvas to new window width and height  
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
 }
